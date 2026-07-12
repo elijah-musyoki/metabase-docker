@@ -29,13 +29,10 @@ All services communicate over the internal `backend` bridge network.
 ## Quick Start
 
 ```bash
-# 1. Copy the example env file and fill in your values
-cp .env.example .env
+# 1. Copy the example env file and generate secrets
+uv run generate-secrets.py
 
-# 2. Generate a secure database password
-openssl rand -base64 32
-
-# 3. Paste the generated value into .env, then start
+# 2. Review .env and start
 docker compose up -d
 ```
 
