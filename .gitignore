@@ -1,0 +1,9 @@
+# Local environment (contains secrets)
+.env
+
+# Research files
+research/
+
+# Docker volumes
+postgres-data/
+uploads/

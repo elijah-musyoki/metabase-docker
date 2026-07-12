@@ -1,0 +1,44 @@
+services:
+  metabase:
+    image: metabase/metabase:${METABASE_VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./uploads:/metabase/uploads
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail -I http://localhost:3000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    env_file: .env
+
+  database:
+    image: postgres:${POSTGRES_VERSION:-17-alpine}
+    restart: unless-stopped
+    shm_size: '256mb'
+    environment:
+      POSTGRES_DB: ${MB_DB_DBNAME:-metabase}
+      POSTGRES_USER: ${MB_DB_USER:-metabase}
+      POSTGRES_PASSWORD: ${MB_DB_PASS}
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${MB_DB_USER:-metabase} -d ${MB_DB_DBNAME:-metabase}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_interval: 5s
+      start_period: 30s
+
+networks:
+  backend:
+    internal: true
