@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
     shm_size: '256mb'
     ports:
-      - "127.0.0.1:5433:5432"
+      - "127.0.0.1:5434:5432"
     environment:
       POSTGRES_DB: ${MB_DB_DBNAME:-directus}
       POSTGRES_USER: ${MB_DB_USER:-metabase_reader}
@@ -75,4 +75,3 @@ services:
 
 networks:
   backend:
-    internal: true
