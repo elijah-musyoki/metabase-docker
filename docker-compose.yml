@@ -1,6 +1,6 @@
 services:
   metabase:
-    image: metabase/metabase:${METABASE_VERSION:-latest}
+    image: metabase/metabase:${METABASE_VERSION:-v0.63.x}
     restart: unless-stopped
     depends_on:
       database:
@@ -14,9 +14,9 @@ services:
       - backend
     environment:
       MB_DB_TYPE: postgres
-      MB_DB_DBNAME: ${MB_DB_DBNAME:-metabase}
+      MB_DB_DBNAME: ${MB_DB_DBNAME:-directus}
       MB_DB_PORT: 5432
-      MB_DB_USER: ${MB_DB_USER:-metabase}
+      MB_DB_USER: ${MB_DB_USER:-metabase_reader}
       MB_DB_PASS: ${MB_DB_PASS}
       MB_DB_HOST: database
       MB_SITE_URL: ${MB_SITE_URL:-http://localhost:3000}
@@ -24,9 +24,10 @@ services:
       MB_JETTY_HOST: 0.0.0.0
       MB_JETTY_MAXTHREADS: ${MB_JETTY_MAXTHREADS:-100}
       MB_ASYNC_QUERY_THREAD_POOL_SIZE: ${MB_ASYNC_QUERY_THREAD_POOL_SIZE:-10}
-      JAVA_OPTS: ${JAVA_OPTS:--Xmx2g}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS:--Xmx2g}
       MAX_SESSION_AGE: ${MAX_SESSION_AGE:-20160}
       MB_QUERY_CACHING_MAX_TTL: ${MB_QUERY_CACHING_MAX_TTL:-3024000}
+      MB_APPLICATION_DB_MAX_CONNECTION_POOL_SIZE: ${MB_APPLICATION_DB_MAX_CONNECTION_POOL_SIZE:-15}
     healthcheck:
       test: ["CMD-SHELL", "curl --fail -I http://localhost:3000/api/health || exit 1"]
       interval: 15s
@@ -46,16 +47,18 @@ services:
     image: postgres:${POSTGRES_VERSION:-17-alpine}
     restart: unless-stopped
     shm_size: '256mb'
+    ports:
+      - "127.0.0.1:5433:5432"
     environment:
-      POSTGRES_DB: ${MB_DB_DBNAME:-metabase}
-      POSTGRES_USER: ${MB_DB_USER:-metabase}
+      POSTGRES_DB: ${MB_DB_DBNAME:-directus}
+      POSTGRES_USER: ${MB_DB_USER:-metabase_reader}
       POSTGRES_PASSWORD: ${MB_DB_PASS}
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${MB_DB_USER:-metabase} -d ${MB_DB_DBNAME:-metabase}"]
+      test: ["CMD-SHELL", "pg_isready -U ${MB_DB_USER:-metabase_reader} -d ${MB_DB_DBNAME:-directus}"]
       interval: 10s
       timeout: 5s
       retries: 6
