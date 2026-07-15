@@ -27,6 +27,7 @@ N/A — Docker Compose project.
 - Metabase does NOT use Redis — caching is database-backed.
 - Health check: `curl --fail -I http://localhost:3000/api/health`.
 - First boot runs migrations (2-5 minutes) — normal.
+- Agent notes and quirks live in `agent-notes/` (gitignored).
 
 ## Commit Attribution
 ```

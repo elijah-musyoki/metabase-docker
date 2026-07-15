@@ -7,3 +7,6 @@ research/
 # Docker volumes
 postgres-data/
 uploads/
+
+# Agent notes (tidbits, quirks, session notes)
+agent-notes/
