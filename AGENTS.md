@@ -20,10 +20,11 @@ N/A — Docker Compose project.
 | Research | `research/README.md` |
 | Services | `docker-compose.yml` |
 | Secrets | `generate-secrets.py` |
+| Bootstrap | `bootstrap.sh` |
 
 ## Key Conventions
 - Secrets in `.env` — gitignored, never commit.
-- First deploy: `uv run generate-secrets.py`, then `docker compose up -d`.
+- First deploy: `./bootstrap.sh` (creates `.env` if missing, then starts Compose).
 - Metabase does NOT use Redis — caching is database-backed.
 - Health check: `curl --fail -I http://localhost:3000/api/health`.
 - First boot runs migrations (2-5 minutes) — normal.
