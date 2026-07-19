@@ -1,36 +1,46 @@
 # Agent Instructions
 
-## Package Manager
-N/A — Docker Compose project.
+## Package manager
+None. This project uses Docker Compose.
 
 ## Commands
+
 | Task | Command |
-|------|---------|
-| Start | `docker compose up -d` |
+|---|---|
+| Start | `./bootstrap.sh` |
+| Start only | `docker compose up -d` |
 | Stop | `docker compose down` |
-| Stop (preserve volumes) | `docker compose stop` |
-| Full cleanup (data loss) | `docker compose down -v` |
+| Stop and keep volumes | `docker compose stop` |
+| Remove everything | `docker compose down -v` |
 | Pull images | `docker compose pull` |
 | Logs | `docker compose logs -f` |
 
-## External References
+## Key files
+
 | Need | File |
-|------|------|
+|---|---|
 | Config | `.env.example` |
 | Research | `research/README.md` |
 | Services | `docker-compose.yml` |
 | Secrets | `generate-secrets.py` |
 | Bootstrap | `bootstrap.sh` |
 
-## Key Conventions
-- Secrets in `.env` — gitignored, never commit.
-- First deploy: `./bootstrap.sh` (creates `.env` if missing, then starts Compose).
-- Metabase does NOT use Redis — caching is database-backed.
-- Health check: `curl --fail -I http://localhost:3000/api/health`.
-- First boot runs migrations (2-5 minutes) — normal.
-- Agent notes and quirks live in `agent-notes/` (gitignored).
+## Key rules
 
-## Commit Attribution
+- Keep secrets in `.env`.
+- Do not commit `.env`.
+- Use `./bootstrap.sh` on first run.
+- It creates `.env` if it is missing.
+- It creates the bind-mount directories.
+- It validates Compose before start.
+- Metabase does not use Redis.
+- Its cache is database-backed.
+- The health check is `curl --fail -I http://localhost:3000/api/health`.
+- First boot takes time for migrations.
+- Wait 2 to 5 minutes on the first run.
+
+## Commit attribution
+
 ```
 Co-Authored-By: opencode <support@opencode.ai>
 ```
